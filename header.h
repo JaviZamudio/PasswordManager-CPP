@@ -15,23 +15,37 @@ void addSite(){
 	//ask for the site info
     cout<<"Tell me the Name of the site: ";
 	getline(cin, site.name);
-    cout<<"Tell me the E-mail or Username: ";
+
+    cout<<"Tell me the Email: ";
+    getline(cin, site.accounts[site.nAccounts].email);
+    if(site.accounts[site.nAccounts].email == "") 
+        site.accounts[site.nAccounts].email = "none";
+
+    cout<<"Tell me the Username: ";
     getline(cin, site.accounts[site.nAccounts].username);
+    if(site.accounts[site.nAccounts].username == "") 
+        site.accounts[site.nAccounts].username = "none";
+
     cout<<"Tell me the Password: ";
 	getline(cin,site.accounts[site.nAccounts].password);
+    if(site.accounts[site.nAccounts].password == "") 
+        site.accounts[site.nAccounts].password = "none";
+
     cout<<"(Optional)Tell me the Description of the account: ";
     getline(cin,site.accounts[site.nAccounts].description);
+    if(site.accounts[site.nAccounts].description == "") 
+        site.accounts[site.nAccounts].description = "none";
     
     site.nAccounts++;
 
     ofstream file;
     file.open("./data.txt",ios::app);
-    file<<encrypt(site.toString());
+    file<<encode(site.toString());
     file.close();
 
 	//a menu of sites to consult from
 	file.open("./sites.txt",ios::app);
-    file<<site.name<<endl;
+    file<<encode(site.name)<<endl;
     file.close();
 
     cout<<"\nEverything saved";
@@ -55,32 +69,33 @@ void getAccounts(){
 		//get a line to evaluate
 		getline(ifile,fileLine);
 		//if it matches the site needed
-		if(decrypt(fileLine) == site.name){
+		if(decode(fileLine) == site.name){
 			inSite = true;
 			found = true;
 		}
 
 		//read the content in the Site
 		while(inSite){
+			//asign email
+            getline(ifile, fileLine); 
+            site.accounts[site.nAccounts].email = decode(fileLine).substr(7);
 			//asign user name
             getline(ifile, fileLine); 
-            site.accounts[site.nAccounts].username = decrypt(fileLine).substr(11);
+            site.accounts[site.nAccounts].username = decode(fileLine).substr(11);
             //asign password
             getline(ifile, fileLine);
-            site.accounts[site.nAccounts].password = decrypt(fileLine).substr(10);
-			//check if there's a description
+            site.accounts[site.nAccounts].password = decode(fileLine).substr(10);
+			//asign the descryption
 			getline(ifile,fileLine);
-			fileLine = decrypt(fileLine);
+            site.accounts[site.nAccounts].description = decode(fileLine.substr(13));
 
-			if(fileLine != "-" && fileLine != ""){
-				site.accounts[site.nAccounts].description = fileLine.substr(13);
-				getline(ifile,fileLine);
-				fileLine = decrypt(fileLine);
-			}
-			//if site is over . . .
-			if(fileLine == ""){
-				inSite = false;
-			}
+            //check if there's another site
+            getline(ifile,fileLine);
+            fileLine = decode(fileLine);
+
+            if(fileLine == ""){
+                inSite = false;
+            }
 
 			//increase the amount of sites
 			site.nAccounts++;
@@ -96,7 +111,7 @@ void getAccounts(){
 	//tell if we find something
     if(found){
         cout<<"\nSite Found!\n\n";
-        cout<<site.toString();
+        cout<<site.toShow();
     }
     else{
         cout<<"\nThe site "<<site.name<<" doesn't exist";
@@ -125,11 +140,11 @@ void addAccount(){
 	while(!ifile.eof()){
 		//site name
 		getline(ifile,fileLine);
-        if(decrypt(fileLine) == ""){
+        if(decode(fileLine) == ""){
             break;
         }
        
-        sites[nSites].name = decrypt(fileLine);
+        sites[nSites].name = decode(fileLine);
         inSite = true;
 
         //if is the site needed declare pos
@@ -141,20 +156,20 @@ void addAccount(){
 
             //account email
             getline(ifile, fileLine);
-            sites[nSites].accounts[nAccounts].username = decrypt(fileLine).substr(11);
+            sites[nSites].accounts[nAccounts].email = decode(fileLine).substr(7);
+            //account username
+            getline(ifile, fileLine);
+            sites[nSites].accounts[nAccounts].username = decode(fileLine).substr(11);
             //account password
             getline(ifile, fileLine);
-            sites[nSites].accounts[nAccounts].password = decrypt(fileLine).substr(10);
-            //check if there's a description
+            sites[nSites].accounts[nAccounts].password = decode(fileLine).substr(10);
+            //account description
             getline(ifile, fileLine);
-            fileLine = decrypt(fileLine);
+            sites[nSites].accounts[nAccounts].description = decode(fileLine).substr(13);
 
-            if(fileLine != "-" && fileLine != ""){
-                sites[nSites].accounts[nAccounts].description = fileLine.substr(13);
-                getline(ifile,fileLine);
-                fileLine = decrypt(fileLine);
-            }
-
+            getline(ifile,fileLine);
+            fileLine = decode(fileLine);
+            
             if(fileLine == ""){
                 inSite = false;
             }
@@ -162,32 +177,110 @@ void addAccount(){
             sites[nSites].nAccounts++;
         }
         nSites++;
-        
 	}
 
 	ifile.close();
 
 	//if site exists, ask for the account
     if(pos >= 0){
-        cout<<"Tell me the E-mail or Username: ";
+        cout<<"Tell me the Email: ";
+        getline(cin, sites[pos].accounts[sites[pos].nAccounts].email);
+        if(sites[pos].accounts[sites[pos].nAccounts].email == "")
+        sites[pos].accounts[sites[pos].nAccounts].email = "none";
+        
+        cout<<"Tell me the Username: ";
         getline(cin, sites[pos].accounts[sites[pos].nAccounts].username);
+        if(sites[pos].accounts[sites[pos].nAccounts].username == "")
+        sites[pos].accounts[sites[pos].nAccounts].username = "none";
+
         cout<<"Tell me the Password: ";
         getline(cin, sites[pos].accounts[sites[pos].nAccounts].password);
+        if(sites[pos].accounts[sites[pos].nAccounts].password == "")
+        sites[pos].accounts[sites[pos].nAccounts].password = "none";
+        
         cout<<"(Optional)Tell me the Description of the account: ";
         getline(cin, sites[pos].accounts[sites[pos].nAccounts].description);
+        if(sites[pos].accounts[sites[pos].nAccounts].description == "")
+        sites[pos].accounts[sites[pos].nAccounts].description = "none";
+        
         sites[pos].nAccounts++;
         
         //rewrite the accounts txt file
         ofstream ofile;
         ofile.open("./data.txt");
         for(int i = 0; i < nSites; i++){
-            ofile<<encrypt(sites[i].toString());
+            ofile<<encode(sites[i].toString());
         }
+        ofile.close();
 
         cout<<"\nEverything Saved :)";
     }
     else{
         cout<<"The site doesn't exist";
     }
+}
 
+void getAllSites(){
+    ifstream ifile;
+    ifile.open("./sites.txt");
+    
+    string fileLine = "";
+    getline(ifile, fileLine);
+    
+    while (!ifile.eof())
+    {
+        fileLine = "";
+        getline(ifile, fileLine);
+
+        cout<<decode(fileLine)<<endl;
+    }
+
+    ifile.close();
+}
+
+void setPassword(){
+    ifstream ifile;
+    ifile.open("./sites.txt");
+
+    //get the previos password
+    string prevPwd = "";
+    getline(ifile, prevPwd);
+    prevPwd = decode(prevPwd);
+
+    //getting the content of the sites
+    string content = "";
+    while(!ifile.eof()){
+        string fileLine = "";
+        getline(ifile, fileLine);
+
+        if(fileLine != "")
+            content += fileLine + "\n";
+    }
+    ifile.close();
+
+    //ask for the the previous password
+    if(prevPwd != ""){
+        string user;
+        cout<<"Write the previous password: ";
+        getline(cin,user);
+
+        while(user != prevPwd){
+            wnSetup("SET/CHANGE PASSWORD");
+            cout<<"Incorrect >:(\n";
+            cout<<"Write the wright password now!: ";
+            getline(cin,user);
+        }
+    }
+
+    //ask for the new password
+    string newPwd = "";
+    cout<<"Tell me the new password: ";
+    getline(cin,newPwd);
+
+    //write everything into the file
+    ofstream ofile;
+    ofile.open("./sites.txt");
+    ofile<<encode(newPwd)<<endl;
+    ofile<<content;
+    ofile.close();
 }

@@ -3,11 +3,8 @@
 int main(){
 	system("title - - PASSWORD MANAGER - -");
 
-    //the default password is "admin"
-    //you can change it with a string as an argument
 	login();
 
-    //the program main loop
     while(true){
         wnSetup();
         //show menu
@@ -15,6 +12,8 @@ int main(){
         cout<<"1) Get a Site\n";
         cout<<"2) Add a Site\n";
         cout<<"3) Add Account to a Site\n";
+        cout<<"4) Show all Site names\n";
+        cout<<"5) Set/Modify Password\n";
         cout<<"0) Exit\n";
         cout<<"Option: ";
         int option;
@@ -37,6 +36,16 @@ int main(){
             case 3:{
                 wnSetup("ADD ACCOUNT TO A SITE");
                 addAccount();
+                break;
+            }
+            case 4:{
+                wnSetup("ALL SITES");
+                getAllSites();
+                break;
+            }
+            case 5:{
+                wnSetup("SET/CHANGE PASSWORD");
+                setPassword();
                 break;
             }
             case 0:{

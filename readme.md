@@ -18,6 +18,7 @@ It has all the generic functions we need to get everything working
 
 **sites.txt :**
 Has all the names of the sites you have registered for you to remember ;)
+now it also contains the actual password
 
 **data.txt :**
 It has all the "encrypted" sites and accounts in a structure the program understands (and me as developer too haha)

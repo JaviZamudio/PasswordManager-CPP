@@ -267,7 +267,7 @@ void setPassword(){
         while(user != prevPwd){
             wnSetup("SET/CHANGE PASSWORD");
             cout<<"Incorrect >:(\n";
-            cout<<"Write the wright password now!: ";
+            cout<<"Write the right password now!: ";
             getline(cin,user);
         }
     }

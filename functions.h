@@ -47,7 +47,7 @@ void login(){
         while(user != pwd){
             wnSetup("LOG-IN");
             cout<<"Incorrect >:(\n";
-            cout<<"Write the wright password now!: ";
+            cout<<"Write the right password now!: ";
             getline(cin,user);
         }
     }
